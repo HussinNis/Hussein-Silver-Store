@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">متجر حسين للفضيات</string>
+    <string name="welcome_title">مرحباً بكم في متجر حسين للفضيات</string>
+    <string name="welcome_subtitle">أفضل تشكيلة من الفضيات الأصيلة</string>
+    <string name="login">تسجيل الدخول</string>
+    <string name="register">إنشاء حساب</string>
+    <string name="email">البريد الإلكتروني</string>
+    <string name="password">كلمة المرور</string>
+    <string name="full_name">الاسم الكامل</string>
+    <string name="confirm_password">تأكيد كلمة المرور</string>
+    <string name="silver_price">سعر الفضة العالمي</string>
+    <string name="per_ounce">للأونصة الواحدة</string>
+    <string name="bullion">السبائك</string>
+    <string name="accessories">الاكسسوارات</string>
+    <string name="calculator">حاسبة الأسعار</string>
+    <string name="cart">سلة المشتريات</string>
+    <string name="add_to_cart">أضف للسلة</string>
+    <string name="remove">حذف</string>
+    <string name="total">المجموع</string>
+    <string name="checkout">إتمام الطلب</string>
+    <string name="weight_grams">الوزن (جرام)</string>
+    <string name="calculate">احسب السعر</string>
+    <string name="price_result">السعر المحسوب</string>
+    <string name="logout">تسجيل الخروج</string>
+    <string name="loading">جاري التحميل...</string>
+    <string name="error_loading">خطأ في تحميل البيانات</string>
+    <string name="cart_empty">السلة فارغة</string>
+    <string name="item_added">تمت الإضافة للسلة</string>
+    <string name="login_success">تم تسجيل الدخول بنجاح</string>
+    <string name="register_success">تم إنشاء الحساب بنجاح</string>
+    <string name="error_email_required">يرجى إدخال البريد الإلكتروني</string>
+    <string name="error_password_required">يرجى إدخال كلمة المرور</string>
+    <string name="error_name_required">يرجى إدخال الاسم</string>
+    <string name="error_password_mismatch">كلمات المرور غير متطابقة</string>
+    <string name="quantity">الكمية</string>
+    <string name="gram">جرام</string>
+    <string name="usd">دولار</string>
+    <string name="updated">آخر تحديث</string>
+    <string name="browse_store">تصفح المتجر</string>
+    <string name="decrease_quantity">تقليل الكمية</string>
+    <string name="increase_quantity">زيادة الكمية</string>
+    <string name="checkout_success">تم تقديم الطلب بنجاح! سنتواصل معكم قريباً.</string>
+    <string name="price_breakdown_format">%.2f جرام × %.4f $/جرام × 1.10 (هامش 10%%)</string>
+</resources>
