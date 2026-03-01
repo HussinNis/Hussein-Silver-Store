@@ -16,6 +16,7 @@ import retrofit2.Response;
 
 public class CalculatorActivity extends AppCompatActivity {
 
+    // Standard troy ounce to gram conversion (1 troy oz = 31.1034768 g)
     private static final double TROY_OUNCE_TO_GRAM = 31.1034768;
     private static final double MARGIN = 1.10; // 10% margin
     private ActivityCalculatorBinding binding;
