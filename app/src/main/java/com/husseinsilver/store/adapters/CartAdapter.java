@@ -41,7 +41,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
     public void onBindViewHolder(@NonNull CartViewHolder holder, int position) {
         CartItem item = cartItems.get(position);
         holder.tvItemName.setText(item.getProductName());
-        holder.tvItemPrice.setText(String.format(Locale.getDefault(), "%.2f $", item.getTotalPrice()));
+        holder.tvItemPrice.setText(String.format(Locale.getDefault(), "%.2f ₪", item.getTotalPrice()));
         holder.tvQuantity.setText(String.valueOf(item.getQuantity()));
 
         holder.btnRemove.setOnClickListener(v -> {
@@ -52,7 +52,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
             int newQty = item.getQuantity() + 1;
             item.setQuantity(newQty);
             holder.tvQuantity.setText(String.valueOf(newQty));
-            holder.tvItemPrice.setText(String.format(Locale.getDefault(), "%.2f $", item.getTotalPrice()));
+            holder.tvItemPrice.setText(String.format(Locale.getDefault(), "%.2f ₪", item.getTotalPrice()));
             if (listener != null) listener.onQuantityChanged(item, newQty);
         });
 
@@ -61,7 +61,7 @@ public class CartAdapter extends RecyclerView.Adapter<CartAdapter.CartViewHolder
                 int newQty = item.getQuantity() - 1;
                 item.setQuantity(newQty);
                 holder.tvQuantity.setText(String.valueOf(newQty));
-                holder.tvItemPrice.setText(String.format(Locale.getDefault(), "%.2f $", item.getTotalPrice()));
+                holder.tvItemPrice.setText(String.format(Locale.getDefault(), "%.2f ₪", item.getTotalPrice()));
                 if (listener != null) listener.onQuantityChanged(item, newQty);
             }
         });

@@ -42,7 +42,7 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ProductV
         holder.tvProductName.setText(product.getName());
         holder.tvProductDescription.setText(product.getDescription());
         holder.tvProductWeight.setText(String.format(Locale.getDefault(), "%.1f جرام", product.getWeightGrams()));
-        holder.tvProductPrice.setText(String.format(Locale.getDefault(), "%.2f $", product.getPrice()));
+        holder.tvProductPrice.setText(String.format(Locale.getDefault(), "%.2f ₪", product.getPrice()));
         holder.btnAddToCart.setOnClickListener(v -> {
             if (listener != null) listener.onAddToCart(product);
         });

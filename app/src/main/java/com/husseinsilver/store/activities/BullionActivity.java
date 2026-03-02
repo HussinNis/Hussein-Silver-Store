@@ -89,14 +89,27 @@ public class BullionActivity extends AppCompatActivity {
         if (uid == null) return;
 
         CartItem cartItem = new CartItem(product.getId(), product.getName(),
-                product.getPrice(), 1, product.getWeightGrams());
+                product.getPrice(), 1, product.getWeightGrams(), true, "bullion");
 
         db.collection("carts").document(uid)
                 .collection("items")
-                .add(cartItem)
-                .addOnSuccessListener(ref -> {
-                    cartItem.setId(ref.getId());
-                    Toast.makeText(this, R.string.item_added, Toast.LENGTH_SHORT).show();
+                .document(product.getId())
+                .get()
+                .addOnSuccessListener(doc -> {
+                    if (doc.exists()) {
+                        CartItem existing = doc.toObject(CartItem.class);
+                        int newQty = (existing != null ? existing.getQuantity() : 0) + 1;
+                        doc.getReference().update("quantity", newQty)
+                                .addOnSuccessListener(v ->
+                                        Toast.makeText(this, R.string.item_added, Toast.LENGTH_SHORT).show());
+                    } else {
+                        cartItem.setId(product.getId());
+                        doc.getReference().set(cartItem)
+                                .addOnSuccessListener(v ->
+                                        Toast.makeText(this, R.string.item_added, Toast.LENGTH_SHORT).show())
+                                .addOnFailureListener(e ->
+                                        Toast.makeText(this, R.string.error_loading, Toast.LENGTH_SHORT).show());
+                    }
                 })
                 .addOnFailureListener(e ->
                         Toast.makeText(this, R.string.error_loading, Toast.LENGTH_SHORT).show());

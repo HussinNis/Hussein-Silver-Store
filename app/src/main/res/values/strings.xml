@@ -41,5 +41,18 @@
     <string name="decrease_quantity">تقليل الكمية</string>
     <string name="increase_quantity">زيادة الكمية</string>
     <string name="checkout_success">تم تقديم الطلب بنجاح! سنتواصل معكم قريباً.</string>
-    <string name="price_breakdown_format">%.2f جرام × %.4f $/جرام × 1.10 (هامش 10%%)</string>
+    <string name="dialog_auth_question">هل لديك حساب بالفعل أم تريد إنشاء حساب؟</string>
+    <string name="has_account">لدي حساب</string>
+    <string name="create_account">إنشاء حساب</string>
+    <string name="base_price">السعر الأساسي</string>
+    <string name="margin_label">هامش الربح (10%%)</string>
+    <string name="final_price">السعر النهائي</string>
+    <string name="weighted_subtotal">مجموع السبائك</string>
+    <string name="accessories_subtotal">مجموع الاكسسوارات</string>
+    <string name="clear_cart">إفراغ السلة</string>
+    <string name="ils">₪</string>
+    <string name="add_as_cart_item">أضف للسلة كعنصر مرجح</string>
+    <string name="price_in_ils">سعر الأونصة بالشيكل</string>
+    <string name="error_no_price">تعذّر الحصول على سعر الفضة. يرجى المحاولة لاحقاً.</string>
+    <string name="cached_price_note">آخر سعر مخزّن (قد لا يكون محدّثاً)</string>
 </resources>
