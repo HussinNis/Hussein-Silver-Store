@@ -12,6 +12,8 @@ import com.husseinsilver.store.R;
 import com.husseinsilver.store.adapters.CartAdapter;
 import com.husseinsilver.store.databinding.ActivityCartBinding;
 import com.husseinsilver.store.models.CartItem;
+import com.husseinsilver.store.utils.Constants;
+import com.husseinsilver.store.utils.SharedPreferencesManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
@@ -23,6 +25,7 @@ public class CartActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private CartAdapter adapter;
     private final List<CartItem> cartItems = new ArrayList<>();
+    private double ouncePriceIls = 0.0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -32,6 +35,7 @@ public class CartActivity extends AppCompatActivity {
 
         db = FirebaseFirestore.getInstance();
         mAuth = FirebaseAuth.getInstance();
+        ouncePriceIls = SharedPreferencesManager.getInstance(this).getSilverPriceILS();
 
         setSupportActionBar(binding.toolbar);
         if (getSupportActionBar() != null) {
@@ -48,7 +52,7 @@ public class CartActivity extends AppCompatActivity {
             @Override
             public void onQuantityChanged(CartItem item, int newQuantity) {
                 updateCartItemQuantity(item);
-                updateTotal();
+                updateTotals();
             }
         });
 
@@ -57,6 +61,8 @@ public class CartActivity extends AppCompatActivity {
 
         binding.btnCheckout.setOnClickListener(v ->
                 Toast.makeText(this, R.string.checkout_success, Toast.LENGTH_LONG).show());
+
+        binding.btnClearCart.setOnClickListener(v -> clearCart());
 
         loadCartItems();
     }
@@ -78,7 +84,7 @@ public class CartActivity extends AppCompatActivity {
                         cartItems.add(item);
                     }
                     adapter.notifyDataSetChanged();
-                    updateTotal();
+                    updateTotals();
                     updateEmptyState();
                 })
                 .addOnFailureListener(e -> {
@@ -97,7 +103,7 @@ public class CartActivity extends AppCompatActivity {
                 .addOnSuccessListener(aVoid -> {
                     cartItems.remove(position);
                     adapter.notifyItemRemoved(position);
-                    updateTotal();
+                    updateTotals();
                     updateEmptyState();
                 })
                 .addOnFailureListener(e ->
@@ -113,12 +119,54 @@ public class CartActivity extends AppCompatActivity {
                 .update("quantity", item.getQuantity());
     }
 
-    private void updateTotal() {
-        double total = 0;
+    private void clearCart() {
+        String uid = mAuth.getCurrentUser() != null ? mAuth.getCurrentUser().getUid() : null;
+        if (uid == null) return;
+
+        db.collection("carts").document(uid)
+                .collection("items")
+                .get()
+                .addOnSuccessListener(querySnapshot -> {
+                    for (QueryDocumentSnapshot doc : querySnapshot) {
+                        doc.getReference().delete();
+                    }
+                    cartItems.clear();
+                    adapter.notifyDataSetChanged();
+                    updateTotals();
+                    updateEmptyState();
+                });
+    }
+
+    private void updateTotals() {
+        double gramPriceIls = ouncePriceIls > 0
+                ? ouncePriceIls / Constants.TROY_OUNCE_TO_GRAM : 0.0;
+
+        double weightedSubtotal = 0;
+        double accessoriesSubtotal = 0;
+
         for (CartItem item : cartItems) {
-            total += item.getTotalPrice();
+            if (item.isWeighted()) {
+                weightedSubtotal += item.getQuantity() * item.getWeightGrams() * gramPriceIls;
+            } else {
+                accessoriesSubtotal += item.getQuantity() * item.getPriceIls();
+            }
         }
-        binding.tvTotal.setText(String.format(Locale.getDefault(), "%.2f $", total));
+
+        double margin = weightedSubtotal * 0.10;
+        double total = weightedSubtotal + margin + accessoriesSubtotal;
+
+        binding.tvWeightedSubtotal.setText(
+                String.format(Locale.getDefault(), "%.2f ₪", weightedSubtotal));
+        binding.tvMargin.setText(
+                String.format(Locale.getDefault(), "%.2f ₪", margin));
+        binding.tvAccessoriesSubtotal.setText(
+                String.format(Locale.getDefault(), "%.2f ₪", accessoriesSubtotal));
+        binding.tvTotal.setText(
+                String.format(Locale.getDefault(), "%.2f ₪", total));
+
+        if (ouncePriceIls <= 0) {
+            Toast.makeText(this, R.string.error_no_price, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void updateEmptyState() {

@@ -2,9 +2,11 @@ package com.husseinsilver.store.activities;
 
 import android.content.Intent;
 import android.os.Bundle;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.husseinsilver.store.R;
 import com.husseinsilver.store.databinding.ActivityWelcomeBinding;
 
 public class WelcomeActivity extends AppCompatActivity {
@@ -27,11 +29,17 @@ public class WelcomeActivity extends AppCompatActivity {
             return;
         }
 
-        binding.btnLogin.setOnClickListener(v ->
-                startActivity(new Intent(this, LoginActivity.class)));
+        binding.btnLogin.setOnClickListener(v -> showAuthDialog());
+    }
 
-        binding.btnRegister.setOnClickListener(v ->
-                startActivity(new Intent(this, RegisterActivity.class)));
+    private void showAuthDialog() {
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.dialog_auth_question)
+                .setPositiveButton(R.string.has_account, (dialog, which) ->
+                        startActivity(new Intent(this, LoginActivity.class)))
+                .setNegativeButton(R.string.create_account, (dialog, which) ->
+                        startActivity(new Intent(this, RegisterActivity.class)))
+                .show();
     }
 
     private void navigateToMain() {

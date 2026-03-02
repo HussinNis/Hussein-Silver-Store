@@ -8,5 +8,5 @@
 .externalNativeBuild
 .cxx
 local.properties
-# Firebase config - replace with your own
-app/google-services.json
+# Note: app/google-services.json is included with placeholder values.
+# Replace with your real google-services.json from Firebase Console before release.

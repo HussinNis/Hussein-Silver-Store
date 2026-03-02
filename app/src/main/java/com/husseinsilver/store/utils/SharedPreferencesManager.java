@@ -44,6 +44,16 @@ public class SharedPreferencesManager {
         return prefs.getString(Constants.PREF_USER_EMAIL, null);
     }
 
+    /** Cache last good silver ounce price in ILS. */
+    public void saveSilverPriceILS(double price) {
+        prefs.edit().putFloat(Constants.PREF_SILVER_PRICE_ILS, (float) price).apply();
+    }
+
+    /** Returns the last cached silver ounce price in ILS, or 0 if never set. */
+    public double getSilverPriceILS() {
+        return prefs.getFloat(Constants.PREF_SILVER_PRICE_ILS, 0f);
+    }
+
     public void clearAll() {
         prefs.edit().clear().apply();
     }

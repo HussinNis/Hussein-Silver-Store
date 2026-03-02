@@ -12,6 +12,7 @@ import com.husseinsilver.store.databinding.ActivityMainBinding;
 import com.husseinsilver.store.network.ApiService;
 import com.husseinsilver.store.network.RetrofitClient;
 import com.husseinsilver.store.network.SilverPriceResponse;
+import com.husseinsilver.store.utils.SharedPreferencesManager;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
@@ -25,6 +26,7 @@ public class MainActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private Handler handler;
     private Runnable priceUpdateRunnable;
+    private SharedPreferencesManager prefsManager;
     private static final long UPDATE_INTERVAL = 60000; // 60 seconds
 
     @Override
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         mAuth = FirebaseAuth.getInstance();
+        prefsManager = SharedPreferencesManager.getInstance(this);
         handler = new Handler(Looper.getMainLooper());
 
         setSupportActionBar(binding.toolbar);
@@ -57,27 +60,57 @@ public class MainActivity extends AppCompatActivity {
         handler.post(priceUpdateRunnable);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        // Show cached price immediately on every start
+        double cached = prefsManager.getSilverPriceILS();
+        if (cached > 0) {
+            binding.tvSilverPrice.setText(
+                    String.format(Locale.getDefault(), "%.2f ₪", cached));
+        }
+    }
+
     private void fetchSilverPrice() {
         ApiService apiService = RetrofitClient.getInstance().getApiService();
-        apiService.getSilverPrice("", "USD", "XAG")
+        apiService.getSilverPrice("", "USD", "XAG,ILS")
                 .enqueue(new Callback<SilverPriceResponse>() {
                     @Override
-                    public void onResponse(Call<SilverPriceResponse> call, Response<SilverPriceResponse> response) {
+                    public void onResponse(Call<SilverPriceResponse> call,
+                                           Response<SilverPriceResponse> response) {
                         if (response.isSuccessful() && response.body() != null) {
-                            double price = response.body().getSilverPriceUSD();
-                            if (price > 0) {
-                                binding.tvSilverPrice.setText(String.format(Locale.getDefault(), "%.4f $", price));
-                                String time = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date());
-                                binding.tvLastUpdated.setText(getString(R.string.updated) + ": " + time);
+                            double priceIls = response.body().getSilverPriceILS();
+                            if (priceIls > 0) {
+                                prefsManager.saveSilverPriceILS(priceIls);
+                                binding.tvSilverPrice.setText(
+                                        String.format(Locale.getDefault(), "%.2f ₪", priceIls));
+                                String time = new SimpleDateFormat("HH:mm:ss",
+                                        Locale.getDefault()).format(new Date());
+                                binding.tvLastUpdated.setText(
+                                        getString(R.string.updated) + ": " + time);
+                                return;
                             }
                         }
+                        showCachedOrError();
                     }
 
                     @Override
                     public void onFailure(Call<SilverPriceResponse> call, Throwable t) {
-                        binding.tvSilverPrice.setText(R.string.error_loading);
+                        showCachedOrError();
                     }
                 });
+    }
+
+    private void showCachedOrError() {
+        double cached = prefsManager.getSilverPriceILS();
+        if (cached > 0) {
+            binding.tvSilverPrice.setText(
+                    String.format(Locale.getDefault(), "%.2f ₪", cached));
+            binding.tvLastUpdated.setText(R.string.cached_price_note);
+        } else {
+            binding.tvSilverPrice.setText(R.string.error_loading);
+            Toast.makeText(this, R.string.error_no_price, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override

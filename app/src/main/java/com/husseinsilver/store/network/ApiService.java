@@ -6,6 +6,7 @@ import retrofit2.http.Query;
 
 public interface ApiService {
 
+    /** Fetches XAG and ILS rates relative to USD base. */
     @GET("latest")
     Call<SilverPriceResponse> getSilverPrice(
             @Query("access_key") String accessKey,

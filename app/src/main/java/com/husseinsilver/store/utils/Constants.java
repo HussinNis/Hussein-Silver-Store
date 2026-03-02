@@ -28,6 +28,7 @@ public class Constants {
     public static final String PREF_USER_ID = "user_id";
     public static final String PREF_USER_NAME = "user_name";
     public static final String PREF_USER_EMAIL = "user_email";
+    public static final String PREF_SILVER_PRICE_ILS = "silver_price_ils";
 
     // Silver price
     public static final double TROY_OUNCE_TO_GRAM = 31.1034768;
